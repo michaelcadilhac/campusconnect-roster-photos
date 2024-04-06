@@ -1,0 +1,37 @@
+\documentclass{article}
+
+\usepackage{graphicx,tabularx}
+\usepackage{luacode}
+
+\usepackage[margin=1in,top=1.5in]{geometry}
+\usepackage[export]{adjustbox}
+\AddToHook {shipout/background}{\put (.5\pagewidth,-1in){\clap{\huge Please write your initials}}}
+
+\renewcommand{\familydefault}{\sfdefault}
+\def\W#1{\multicolumn{2}{|c|}{\large\bf W#1}}
+
+\usepackage[none]{hyphenat}
+
+\def\Tformatname#1,#2\\{\flushleft{\LARGE #1}\\[.5em]{\Large #2}}
+\def\formatname#1{\Tformatname#1\\}
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\newcommand{\onestudent}[3]{%
+  \noindent\includegraphics[width=3cm,valign=c]{#3} \qquad \parbox[c]{4cm}{\formatname{#2}}
+  \hfill%
+  \begin{tabularx}{0.5\linewidth}[c]{|Y|Y|Y|Y|Y|Y|Y|Y|}
+    \W2 & \W3 & \W4 & \W5 \\
+    Tue & Th & Tue & Th & Tue & Th & Tue & Th\\[1em]
+    & & & & & & &
+  \end{tabularx}\\[2em]}
+
+\pagestyle{empty}
+
+\begin{document}
+\luaexec{
+  for line in io.lines ("roster.csv") do
+    local uid, name, pic = line:match ("([^:]*):([^:]*):([^:]*)")
+    tex.sprint ("\\onestudent{" .. uid .. "}{" .. name .. "}{" .. pic .. "}")
+  end
+}
+\end{document}

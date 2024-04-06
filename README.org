@@ -1,0 +1,16 @@
+This repository contains:
+- =roster-to-photos.sh=: A script that takes the PDF obtained from the roster
+  tab in CampusConnect and extracts as PNG the photo of each student.  The
+  database is stored in a CSV file that lists the UID/Name/PNG file for each
+  student.
+- =attendance.tex=: A LuaLaTeX file that parses the resulting CSV (therein
+  =roster.csv=) and lay the students out in an attendance sheet.  *This must be
+  processed with LuaLaTeX*
+
+Example usage:
+#+begin_example
+$ ./roster-to-pngs.sh DU_SRC_CLSROS.pdf roster.csv
+running pdfimages...
+processing student #27. all done.
+$ latexmk -lualatex attendance.tex
+#+end_example
