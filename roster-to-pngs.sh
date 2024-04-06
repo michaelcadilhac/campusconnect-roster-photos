@@ -1,9 +1,6 @@
 #!/bin/zsh -f
 
 PROG=$0
-DENSITY_FACTOR=3
-PHOTO_SIZE=59
-PHOTO_XPOS=352
 
 usage () {
     cat <<EOF
