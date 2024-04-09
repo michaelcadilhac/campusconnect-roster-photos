@@ -4,18 +4,19 @@ PROG=$0
 
 usage () {
     cat <<EOF
-usage: $PROG ROSTER.PDF ROSTER.CSV
+usage: $PROG ROSTER.PDF [ROSTER.PDF...] ROSTER.CSV
 
-This scripts reads ROSTER.PDF and extracts the name, UID, and photo of each
-student.  The resulting database is stored in ROSTER.CSV.  The photos are saved
-as PNG files in the current directory.
+This scripts reads one or more ROSTER.PDF and extracts the name, UID, and photo
+of each student.  The resulting database is stored in ROSTER.CSV.  The photos
+are saved as JPEG files in the current directory.
 
 Dependencies: pdfimages and pdftotext (from poppler).
 EOF
     exit 2
 }
 
-(( $# == 2 )) || usage
+(( $# >= 2 )) || usage
+
 for dep in pdftotext pdfimages; do
     if ! which $dep &> /dev/null; then
         echo "error: missing dependency $dep"
@@ -39,15 +40,26 @@ die () {
     exit 2
 }
 
-rm -f $2 || die "cannot delete $2."
+CSV="${@: -1}"
+
+rm -f $CSV || die "cannot delete $CSV."
 
 photodir=$(mktemp -d)
+
+if (( $# > 2 )); then
+    echo "concatenating PDFs..."
+    pdf=$photodir/roster.pdf
+    pdftk "${@[@]:1:-1}" cat output $pdf
+else
+    pdf=$1
+fi
+
 echo "running pdfimages..."
-pdfimages -png $1 $photodir/photo || die "pdfimages failed."
+pdfimages -j $pdf $photodir/photo || die "pdfimages failed."
 
 photoid=0
-pdftotext -bbox-layout $1 - | while readuntil '.</word>'; do
-    echo -n "\rprocessing student #$(content $line)"
+pdftotext -bbox-layout $pdf - | while readuntil '.</word>'; do
+    echo -n "\rprocessing student #$photoid"
     # Jumps to the first word after the number id.
     readuntil '<word' || die
     id=$(content $line)
@@ -58,9 +70,13 @@ pdftotext -bbox-layout $1 - | while readuntil '.</word>'; do
         name="$name$(content $line)"
         read line || die
     done
-    (( photoid ++))
-    mv $photodir/photo-${(l(3)(0))photoid}.png $id.png || exit 3
-    echo $id:$name:$id.png >> $2
+    while :; do
+        (( photoid ++))
+        photo=$photodir/photo-${(l(3)(0))photoid}.jpg
+        [[ -e $photo ]] && break
+    done
+    mv $photo $id.jpg || exit 3
+    echo $id:$name:$id.jpg >> $CSV
 done
 
 echo " all done."

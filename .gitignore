@@ -1,3 +1,5 @@
 *.png
 *.csv
 _build
+*.jpg
+*.pdf
