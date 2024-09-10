@@ -3,7 +3,7 @@
 \usepackage{graphicx,tabularx}
 \usepackage{luacode}
 
-\usepackage[margin=1in,top=1.5in]{geometry}
+\usepackage[margin=0.8in,top=1.5in]{geometry}
 \usepackage[export]{adjustbox}
 \AddToHook {shipout/background}{\put (.5\pagewidth,-1in){\clap{\huge Please write your initials}}}
 
@@ -19,10 +19,10 @@
 \newcommand{\onestudent}[3]{%
   \noindent\includegraphics[width=3cm,valign=c]{#3} \qquad \parbox[c]{4cm}{\formatname{#2}}
   \hfill%
-  \begin{tabularx}{0.5\linewidth}[c]{|Y|Y|Y|Y|Y|Y|Y|Y|}
-    \W2 & \W3 & \W4 & \W5 \\
-    Tue & Th & Tue & Th & Tue & Th & Tue & Th\\[1em]
-    & & & & & & &
+  \begin{tabularx}{0.6\linewidth}[c]{|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+    \W6 & \W7 & \W8 & \W9 & \W{10} \\
+    Tue & Th & Tue & Th & Tue & Th & Tue & Th & Tue & Th\\[1em]
+    X & & & & & & & & &
   \end{tabularx}\par\vspace{2em}}
 
 \pagestyle{empty}
